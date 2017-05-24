@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>Application</title>
+    
+    <link rel="stylesheet" href="/css/style.css">
+    {{#if showTests}}
+        <link rel="stylesheet" href="/vendor/mocha.css">
+    {{/if}}
+    <script src="//code.jquery.com/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+    <header><img alt="img" src="/images/logo.jpg"></img></header>
+    {{{body}}}
+
+    {{#if showTests}}
+    <div id="mocha"></div>
+    <script src="/vendor/mocha.js"></script>
+    <script src="/vendor/chai.js"></script>
+    <script>
+    mocha.ui('tdd');
+    var assert = chai.assert;
+    </script>
+    <script src="/test/tests-global.js"></script>
+        {{#if pageTestScript}}
+        <script src="{{pageTestScript}}"></script>
+        {{/if}}
+    <script>mocha.run();</script>
+    {{/if}}
+
+</body>
+</html>
