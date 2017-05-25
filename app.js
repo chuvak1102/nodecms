@@ -1,7 +1,16 @@
 var express = require('express');
+var bodyParser = require('body-parser');
+var handlebars = require('express-handlebars').create({defaultLayout : 'layout'});
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://chuvak1102:1102110211021102@cluster0-shard-00-00-vc2tr.mongodb.net:27017,cluster0-shard-00-01-vc2tr.mongodb.net:27017,cluster0-shard-00-02-vc2tr.mongodb.net:27017/db?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin', opts);
+
 var app = express();
-var handlebars = require('express-handlebars')
-.create({defaultLayout : 'layout'});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({     
+  extended: true
+}));
+
+
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 app.set('port', process.env.PORT);
@@ -18,6 +27,14 @@ app.use(function(req, res, next){
     next();
 });
 
+
+// mongodb
+var opts = {
+    server: {
+    socketOptions: { 
+        keepAlive: 1 
+    }
+}};
 
 // роутеры
 app.get('/', function(req, res){
@@ -38,6 +55,26 @@ app.get('/about', function(req, res){
         result : aboutModel.getData(),
         pageTestScript: '/test/tests-about.js'
     });
+});
+
+app.post('/submit', function(req, res){
+    res.render('tour', {
+        data : 't-data'
+        // result : aboutModel.getData(),
+        // pageTestScript: '/test/tests-about.js'
+    });
+    
+    console.log(req.body.name);
+    console.log(req.body.password);
+});
+
+// заголовки браузера
+app.get('/headers', function(req,res){
+    res.set('Content-Type','text/plain');
+    var s = '';
+    for(var name in req.headers)
+    s += name + ': ' + req.headers[name] + '\n';
+    res.send(s);
 });
 
 // пользовательская страница 404
